@@ -47,7 +47,26 @@ const fetchCoordsByIP = function(ip, callback) {
   });
 };
 
+const fetchISSFlyOverTimes = function(coords, callback) {
+  // request lat and long from api
+  request(`https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`, (error, response, body) => {
+    if (error !== null) {
+      callback(error, null);
+    } else if (response.statusCode !== 200) {
+      // Print the response status code if not 200, invalid lat and lon would give message "invalid coordinates in body"
+      const msg = `Status Code ${response.statusCode}. Response: ${body}`;
+      callback(Error(msg), null);
+    } else {
+    // Print the API
+      const response = JSON.parse(body).response;
+      callback(null, response);
+    }
+  });
+};
+
+
 module.exports = {
   fetchMyIP,
-  fetchCoordsByIP
+  fetchCoordsByIP,
+  fetchISSFlyOverTimes
 };
